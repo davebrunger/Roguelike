@@ -1,4 +1,4 @@
-﻿namespace Roguelike.Lib.Models;
+﻿namespace Roguelike.Lib;
 
 public static class Constants
 {
@@ -15,10 +15,20 @@ public static class Constants
     /// <summary>
     /// How many tiles to render in the X direction.
     /// </summary>
-    public const int RenderWidth = 32;
+    public const int RenderWidth = 20;
 
     /// <summary>
     /// How many tiles to render in the Y direction.
     /// </summary>
-    public const int RenderHeight = 18;
+    public const int RenderHeight = 15;
+
+    /// <summary>
+    /// Move Delay in milliseconds.
+    /// </summary>
+    public const long MoveDelay = 100;
+
+    /// <summary>
+    /// Move Delay in milliseconds.
+    /// </summary>
+    public const int VisibleDistance = 16;
 }

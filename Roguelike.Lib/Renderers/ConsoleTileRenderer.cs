@@ -4,16 +4,17 @@ public class ConsoleTileRenderer : ITileRenderer
 {
     public void Clear()
     {
-        Console.Clear();
+        // Console.Clear();
     }
 
     public void NewLine()
     {
-        Console.WriteLine();
+        // Console.WriteLine();
     }
 
-    public void Render(int x, int y, Tile tile)
+    public void Render(int x, int y, Tile tile, IEnumerable<Entity> entities)
     {
+        Console.SetCursorPosition(x, y);
         if (!tile.Revealed || tile.TileType == TileType.Hole)
         {
             Console.Write(' ');
@@ -24,7 +25,11 @@ public class ConsoleTileRenderer : ITileRenderer
         {
             Console.ForegroundColor = ConsoleColor.DarkGray;
         }
-        if (tile.TileType == TileType.Wall)
+        if (entities.Any(e =>  e.Name == "Player"))
+        {
+            Console.Write("@");
+        }
+        else if (tile.TileType == TileType.Wall)
         {
             Console.Write('#');
         }
