@@ -25,9 +25,13 @@ public class ConsoleTileRenderer : ITileRenderer
         {
             Console.ForegroundColor = ConsoleColor.DarkGray;
         }
-        if (entities.Any(e =>  e.Name == "Player"))
+        if (entities.Any(e => e.EntityType == EntityType.Player))
         {
             Console.Write("@");
+        }
+        else if (entities.Any(e => e.EntityType == EntityType.Monster) && tile.Visible)
+        {
+            Console.Write("X");
         }
         else if (tile.TileType == TileType.Wall)
         {

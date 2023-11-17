@@ -2,5 +2,5 @@
 
 public interface IEntityMover
 {
-    Entity MoveEntity(Entity entity, int dx, int dy, Grid<Tile> tiles);
+    Dungeon MoveEntity(Dungeon dungeon, int entityIndex, int dx, int dy);
 }

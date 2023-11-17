@@ -3,5 +3,6 @@
 public enum EntityType
 {
     Unknown,
-    Player
+    Player,
+    Monster
 }

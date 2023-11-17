@@ -1,16 +1,14 @@
 ﻿namespace Roguelike.Lib.Generators;
 
-public class MapGenerator
+public class MapGenerator : IMapGenerator
 {
     private readonly IWalkGenerator walkGenerator;
     private readonly IWallTidier wallTidier;
-    private readonly IFogOfWarUpdater fogOfWarUpdater;
 
-    public MapGenerator(IWalkGenerator walkGenerator, IWallTidier wallTidier, IFogOfWarUpdater fogOfWarUpdater)
+    public MapGenerator(IWalkGenerator walkGenerator, IWallTidier wallTidier)
     {
         this.walkGenerator = walkGenerator;
         this.wallTidier = wallTidier;
-        this.fogOfWarUpdater = fogOfWarUpdater;
     }
 
     public (Grid<Tile> tiles, (int X, int Y) playerPosition) GenerateMap()
@@ -29,8 +27,6 @@ public class MapGenerator
         {
             (tiles, wallsTidied) = wallTidier.TidyWalls(tiles);
         }
-
-        tiles = fogOfWarUpdater.UpdateFogOfWar(tiles, playerPosition.X, playerPosition.Y);
 
         return (tiles, playerPosition);
     }

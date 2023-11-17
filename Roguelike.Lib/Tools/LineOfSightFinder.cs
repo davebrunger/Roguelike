@@ -2,7 +2,7 @@
 
 public class LineOfSightFinder : ILineOfSightFinder
 {
-    public bool HasLineOfSight(int fromX, int fromY, int toX, int toY, Grid<Tile> tiles)
+    public bool HasLineOfSight(int fromX, int fromY, int toX, int toY, Grid<Tile> tiles, Grid<bool> blocksLineOfSight)
     {
         var dx = Math.Abs(toX - fromX);
         var dy = Math.Abs(toY - fromY);
@@ -33,6 +33,11 @@ public class LineOfSightFinder : ILineOfSightFinder
             }
 
             if (tiles[fromX, fromY].TileType == TileType.Wall)
+            {
+                return false;
+            }
+
+            if (blocksLineOfSight[fromX, fromY])
             {
                 return false;
             }

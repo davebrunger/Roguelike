@@ -9,8 +9,10 @@ public class FogOfWarUpdater : IFogOfWarUpdater
         this.lineOfSightFinder = lineOfSightFinder;
     }
 
-    public Grid<Tile> UpdateFogOfWar(Grid<Tile> tiles, int playerX, int playerY)
+    public Dungeon UpdateFogOfWar(Dungeon dungeon)
     {
+        var tiles = dungeon.Tiles;
+
         for (var x = 0; x < tiles.Width; x++)
         {
             for (var y = 0; y < tiles.Height; y++)
@@ -18,6 +20,18 @@ public class FogOfWarUpdater : IFogOfWarUpdater
                 tiles = tiles.SetItem(x, y, tiles[x, y] with { Visible = false });
             }
         }
+
+        var blocksLineOfSight = new Grid<bool>(tiles.Width, tiles.Height, _ => false);
+        foreach (var entity in dungeon.Entities)
+        {
+            if (entity.BlocksLineOfSight)
+            {
+                blocksLineOfSight = blocksLineOfSight.SetItem(entity.X, entity.Y, true);
+            }
+        }
+
+        var playerX = dungeon.Entities[0].X;
+        var playerY = dungeon.Entities[0].Y;
 
         for (var vy = -Constants.VisibleDistance; vy <= Constants.VisibleDistance; vy++)
         {
@@ -33,7 +47,7 @@ public class FogOfWarUpdater : IFogOfWarUpdater
                 {
                     continue;
                 }
-                if (!lineOfSightFinder.HasLineOfSight(playerX, playerY, x, y, tiles))
+                if (!lineOfSightFinder.HasLineOfSight(playerX, playerY, x, y, tiles, blocksLineOfSight))
                 {
                     continue;
                 }
@@ -41,7 +55,7 @@ public class FogOfWarUpdater : IFogOfWarUpdater
             }
         }
 
-        return tiles;
+        return dungeon with { Tiles = tiles };
     }
 
     private static int GetDistance(int x1, int y1, int x2, int y2)

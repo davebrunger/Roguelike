@@ -2,5 +2,5 @@
 
 public interface IFogOfWarUpdater
 {
-    Grid<Tile> UpdateFogOfWar(Grid<Tile> tiles, int playerX, int playerY);
+    Dungeon UpdateFogOfWar(Dungeon dungeon);
 }

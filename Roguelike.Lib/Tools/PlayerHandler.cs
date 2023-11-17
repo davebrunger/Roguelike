@@ -1,4 +1,6 @@
-﻿namespace Roguelike.Lib.Inputs;
+﻿using Roguelike.Lib.Inputs;
+
+namespace Roguelike.Lib.Tools;
 
 public class PlayerHandler
 {
@@ -40,18 +42,16 @@ public class PlayerHandler
             }
             if (dx != 0 || dy != 0)
             {
-                var player = entityMover.MoveEntity(dungeon.Entities[0], dx, dy, dungeon.Tiles);
-                changed = player.X != dungeon.Entities[0].X || player.Y != dungeon.Entities[0].Y;
-                var tiles = changed
-                    ? fogOfWarUpdater.UpdateFogOfWar(dungeon.Tiles, player.X, player.Y)
-                    : dungeon.Tiles;
-                dungeon = changed
-                    ? dungeon with { Entities = dungeon.Entities.SetItem(0, player), Tiles = tiles }
-                    : dungeon;
+                var newDungeon = entityMover.MoveEntity(dungeon, 0, dx, dy);
+                changed = newDungeon.Entities[0].X != dungeon.Entities[0].X || newDungeon.Entities[0].Y != dungeon.Entities[0].Y;
+                if (changed)
+                {
+                    dungeon = fogOfWarUpdater.UpdateFogOfWar(newDungeon);
+                }
                 delay = Constants.MoveDelay;
             }
         }
-        
+
         return (changed, dungeon, delay);
     }
 }

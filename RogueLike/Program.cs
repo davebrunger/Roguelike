@@ -1,6 +1,4 @@
-﻿using Roguelike.Lib;
-
-var builder = Host.CreateDefaultBuilder(args);
+﻿var builder = Host.CreateDefaultBuilder(args);
 
 builder.ConfigureServices(config =>
 {
@@ -12,20 +10,29 @@ builder.ConfigureServices(config =>
     config.AddScoped<IFogOfWarUpdater, FogOfWarUpdater>();
     config.AddScoped<ILineOfSightFinder, LineOfSightFinder>();
     config.AddScoped<IEntityMover, EntityMover>();
+    config.AddScoped<IMapGenerator, EmptyMapGenerator>();
+    config.AddScoped<IMonsterHandler, MonsterHandler>();
     config.AddScoped<PlayerHandler>();
-    config.AddScoped<MapGenerator>();
     config.AddScoped<MapRenderer>();
+    config.AddScoped<EntityAdder>();
+    config.AddScoped<MonstersHandler>();
 });
 
 var host = builder.Build();
 
-var (tiles, playerPosition) = host.Services.GetRequiredService<MapGenerator>().GenerateMap();
-
-var player = new Entity(0, EntityType.Player, "Player", playerPosition.X, playerPosition.Y, Facing.Right);
-var dungeon = new Dungeon(ImmutableList<Entity>.Empty.Add(player), tiles);
-
+var mapGenerator = host.Services.GetRequiredService<IMapGenerator>();
+var entityAdder = host.Services.GetRequiredService<EntityAdder>();
 var mapRenderer = host.Services.GetRequiredService<MapRenderer>();
 var playerHandler = host.Services.GetRequiredService<PlayerHandler>();
+var monstersHandler = host.Services.GetRequiredService<MonstersHandler>();
+var fogofWarUpdater = host.Services.GetRequiredService<IFogOfWarUpdater>();
+
+var (tiles, playerPosition) = mapGenerator.GenerateMap();
+
+var dungeon = new Dungeon(ImmutableList<Entity>.Empty, tiles);
+dungeon = entityAdder.InitPlayer(dungeon, playerPosition.X, playerPosition.Y);
+dungeon = entityAdder.InitMonster(dungeon, "Micro Mouse");
+dungeon = fogofWarUpdater.UpdateFogOfWar(dungeon);
 
 var currentTicks = Environment.TickCount64;
 var playerDelay = 0L;
@@ -44,4 +51,5 @@ while (true)
     var delta = newTicks - currentTicks;
     currentTicks = newTicks;
     (changed, dungeon, playerDelay) = playerHandler.HandleInput(dungeon, playerDelay, delta);
+    dungeon = dungeon with { Entities = monstersHandler.HandleMonsters(dungeon.Entities) };
 }

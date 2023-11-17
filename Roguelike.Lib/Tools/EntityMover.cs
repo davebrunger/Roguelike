@@ -2,8 +2,10 @@
 
 public class EntityMover : IEntityMover
 {
-    public Entity MoveEntity(Entity entity, int dx, int dy, Grid<Tile> tiles)
+    public Dungeon MoveEntity(Dungeon dungeon, int entityIndex, int dx, int dy)
     {
+        var entity = dungeon.Entities[entityIndex];
+
         var x = entity.X + dx;
         var y = entity.Y + dy;
 
@@ -14,10 +16,16 @@ public class EntityMover : IEntityMover
             _ => entity.Facing
         };
 
-        (x, y) = x >= 0 && y >= 0 && x < tiles.Width && y < tiles.Height && tiles[x, y].TileType == TileType.Ground
+        (x, y) = x >= 0 && y >= 0 && x < dungeon.Tiles.Width && y < dungeon.Tiles.Height && dungeon.Tiles[x, y].TileType == TileType.Ground && !IsBlocked(dungeon, x, y)
             ? (x, y)
             : (entity.X, entity.Y);
 
-        return entity with { X = x, Y = y, Facing = facing };
+        var newEntity = entity with { X = x, Y = y, Facing = facing };
+        return dungeon with { Entities = dungeon.Entities.SetItem(entityIndex, newEntity) };
+    }
+
+    private static bool IsBlocked(Dungeon dungeon, int x, int y)
+    {
+        return dungeon.Entities.Any(e => e.X == x && e.Y == y && (e.EntityType == EntityType.Player || e.EntityType == EntityType.Monster));
     }
 }
