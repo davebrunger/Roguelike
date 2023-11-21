@@ -22,7 +22,7 @@ public class FogOfWarUpdater : IFogOfWarUpdater
         }
 
         var blocksLineOfSight = new Grid<bool>(tiles.Width, tiles.Height, _ => false);
-        foreach (var entity in dungeon.Entities)
+        foreach (var entity in dungeon.Entities.Values)
         {
             if (entity.BlocksLineOfSight)
             {

@@ -28,7 +28,22 @@ public static class Constants
     public const long MoveDelay = 100;
 
     /// <summary>
+    /// Notification Delay in milliseconds.
+    /// </summary>
+    public const long NotificationDelay = 5000;
+
+    /// <summary>
     /// Move Delay in milliseconds.
     /// </summary>
     public const int VisibleDistance = 16;
+
+    /// <summary>
+    /// Maximum number of notifications to display in the HUD
+    /// </summary>
+    public const int MaxNotifications = 10;
+
+    /// <summary>
+    /// Maximum width of notification to display in the HUD
+    /// </summary>
+    public const int MaxNotificationWidth = 50;
 }

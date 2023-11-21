@@ -2,9 +2,16 @@
 
 public class EntityMover : IEntityMover
 {
-    public Dungeon MoveEntity(Dungeon dungeon, int entityIndex, int dx, int dy)
+    private readonly ICombatResolver combatResolver;
+
+    public EntityMover(ICombatResolver combatResolver)
     {
-        var entity = dungeon.Entities[entityIndex];
+        this.combatResolver = combatResolver;
+    }
+
+    public (bool hasNewNotifications, Dungeon dungeon) MoveEntity(Dungeon dungeon, int entityId, int dx, int dy)
+    {
+        var entity = dungeon.Entities[entityId];
 
         var x = entity.X + dx;
         var y = entity.Y + dy;
@@ -16,16 +23,22 @@ public class EntityMover : IEntityMover
             _ => entity.Facing
         };
 
-        (x, y) = x >= 0 && y >= 0 && x < dungeon.Tiles.Width && y < dungeon.Tiles.Height && dungeon.Tiles[x, y].TileType == TileType.Ground && !IsBlocked(dungeon, x, y)
-            ? (x, y)
-            : (entity.X, entity.Y);
+        if (x < 0 || y < 0 || x >= dungeon.Tiles.Width || y >= dungeon.Tiles.Height || dungeon.Tiles[x, y].TileType != TileType.Ground)
+        {
+            return (false, dungeon);
+        }
+
+        if (IsBlocked(dungeon, x, y))
+        {
+            return combatResolver.ResolveMeleeAttack(dungeon, entity, dungeon.Entities.Values.First(e => e.X == x && e.Y == y));
+        }
 
         var newEntity = entity with { X = x, Y = y, Facing = facing };
-        return dungeon with { Entities = dungeon.Entities.SetItem(entityIndex, newEntity) };
+        return (false, dungeon with { Entities = dungeon.Entities.Update(newEntity) });
     }
 
     private static bool IsBlocked(Dungeon dungeon, int x, int y)
     {
-        return dungeon.Entities.Any(e => e.X == x && e.Y == y && (e.EntityType == EntityType.Player || e.EntityType == EntityType.Monster));
+        return dungeon.Entities.Values.Any(e => e.X == x && e.Y == y && (e.EntityType == EntityType.Player || e.EntityType == EntityType.Monster));
     }
 }

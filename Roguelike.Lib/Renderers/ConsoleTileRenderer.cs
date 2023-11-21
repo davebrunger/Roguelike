@@ -2,16 +2,6 @@
 
 public class ConsoleTileRenderer : ITileRenderer
 {
-    public void Clear()
-    {
-        // Console.Clear();
-    }
-
-    public void NewLine()
-    {
-        // Console.WriteLine();
-    }
-
     public void Render(int x, int y, Tile tile, IEnumerable<Entity> entities)
     {
         Console.SetCursorPosition(x, y);

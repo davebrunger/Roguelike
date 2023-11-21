@@ -2,5 +2,5 @@
 
 public interface IEntityMover
 {
-    Dungeon MoveEntity(Dungeon dungeon, int entityIndex, int dx, int dy);
+    (bool hasNewNotifications, Dungeon dungeon) MoveEntity(Dungeon dungeon, int entityId, int dx, int dy);
 }

@@ -2,5 +2,5 @@
 
 public interface IMonsterHandler
 {
-    Entity HandleMonster(Entity entity);
+    Entity? HandleMonster(Entity entity);
 }

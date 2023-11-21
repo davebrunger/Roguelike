@@ -11,8 +11,6 @@
 
         public void RenderDungeon(Dungeon dungeon)
         {
-            tileRenderer.Clear();
-
             var cameraX = dungeon.Entities[0].X - (Constants.RenderWidth / 2);
             var cameraY = dungeon.Entities[0].Y - (Constants.RenderHeight / 2);
 
@@ -26,7 +24,7 @@
                     if (mx >= 0 && my >= 0 && mx < dungeon.Tiles.Width && my < dungeon.Tiles.Height)
                     {
                         var tile = dungeon.Tiles[mx, my];
-                        var entities = dungeon.Entities.Where(e => e.X == mx && e.Y == my).ToList();
+                        var entities = dungeon.Entities.Values.Where(e => e.X == mx && e.Y == my).ToList();
                         tileRenderer.Render(x, y, tile, entities);
                     }
                     else
@@ -34,7 +32,6 @@
                         tileRenderer.Render(x, y, new Tile(TileType.Hole, false, false), Enumerable.Empty<Entity>());
                     }
                 }
-                tileRenderer.NewLine();
             }
         }
     }

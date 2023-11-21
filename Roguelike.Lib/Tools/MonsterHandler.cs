@@ -2,8 +2,8 @@
 
 public class MonsterHandler : IMonsterHandler
 {
-    public Entity HandleMonster(Entity entity)
+    public Entity? HandleMonster(Entity entity)
     {
-        return entity;
+        return entity.Dead ? null : entity;
     }
 }
